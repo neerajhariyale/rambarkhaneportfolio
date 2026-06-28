@@ -23,8 +23,12 @@ export default defineConfig([
       },
     },
     rules: {
-      // Allow capitalized JSX components and `motion` (used only via <motion.*>)
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]|^motion$' }],
+      // Allow capitalized JSX components (incl. destructured `icon: Icon`
+      // params used only in JSX) and `motion` (used only via <motion.*>).
+      'no-unused-vars': [
+        'error',
+        { varsIgnorePattern: '^[A-Z_]|^motion$', argsIgnorePattern: '^[A-Z_]|^_' },
+      ],
     },
   },
 ])

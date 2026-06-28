@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
-import { buildWhatsAppLink } from "../data/site";
 import { lockScroll, unlockScroll } from "../lib/scrollLock";
+import InquiryForm from "./InquiryForm";
 
 export default function Lightbox({ art, onClose, onPrev, onNext }) {
   const isOpen = !!art;
   const overlayRef = useRef(null);
   const closeRef = useRef(null);
   const [zoomed, setZoomed] = useState(false);
+  const [inquireOpen, setInquireOpen] = useState(false);
 
   // Reset zoom whenever the shown artwork changes.
   useEffect(() => {
@@ -36,6 +37,7 @@ export default function Lightbox({ art, onClose, onPrev, onNext }) {
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e) => {
+      if (inquireOpen) return; // let the inquiry form own the keyboard
       if (e.key === "Escape") return onClose();
       if (e.key === "ArrowLeft") return onPrev();
       if (e.key === "ArrowRight") return onNext();
@@ -60,10 +62,11 @@ export default function Lightbox({ art, onClose, onPrev, onNext }) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [isOpen, onClose, onPrev, onNext]);
+  }, [isOpen, onClose, onPrev, onNext, inquireOpen]);
 
   return (
-    <AnimatePresence>
+    <>
+      <AnimatePresence>
       {isOpen && (
         <motion.div
           ref={overlayRef}
@@ -174,14 +177,12 @@ export default function Lightbox({ art, onClose, onPrev, onNext }) {
                 </div>
               </dl>
 
-              <a
-                href={buildWhatsAppLink(art)}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={() => setInquireOpen(true)}
                 className="mt-8 rounded-full bg-ink px-6 py-3.5 text-center text-xs font-medium uppercase tracking-[0.2em] text-paper transition-colors duration-200 hover:bg-gold-deep"
               >
-                Inquire on WhatsApp
-              </a>
+                Purchase / Inquire
+              </button>
               <p className="mt-3 text-center text-[0.7rem] tracking-wide text-faint">
                 Private acquisition · Worldwide shipping · Replies within 24h
               </p>
@@ -189,6 +190,16 @@ export default function Lightbox({ art, onClose, onPrev, onNext }) {
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+      </AnimatePresence>
+
+      <InquiryForm
+        open={inquireOpen}
+        onClose={() => setInquireOpen(false)}
+        artwork={art}
+        type="whatsapp_inquiry"
+        source="lightbox"
+        heading="Purchase / Inquire"
+      />
+    </>
   );
 }

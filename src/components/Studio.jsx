@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
-import { studio } from "../data/site";
+import { useSite } from "../lib/siteContent";
 import { fadeUp, stagger, viewportOnce } from "../lib/motion";
 
 export default function Studio() {
+  const { studio } = useSite();
   return (
     <section
       id="studio"

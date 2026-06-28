@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
-import { artist, about } from "../data/site";
+import { useSite } from "../lib/siteContent";
 import { fadeUp, stagger, viewportOnce } from "../lib/motion";
 
 export default function About() {
+  const { artist, about } = useSite();
   return (
     <section id="about" className="relative overflow-hidden py-24 sm:py-32">
       <div className="mx-auto grid max-w-7xl items-center gap-14 px-6 lg:grid-cols-2 lg:gap-20">

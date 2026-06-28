@@ -1,10 +1,13 @@
 import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
-import { artist, buildWhatsAppLink } from "../data/site";
+import { buildWhatsAppLink } from "../data/site";
+import { useSite } from "../lib/siteContent";
+import { trackLead } from "../lib/track";
 
 const ease = [0.22, 1, 0.36, 1];
 
 export default function Hero() {
+  const { artist } = useSite();
   const scrollTo = (e, id) => {
     e.preventDefault();
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -70,9 +73,10 @@ export default function Hero() {
               Explore the Collection
             </a>
             <a
-              href={buildWhatsAppLink()}
+              href={buildWhatsAppLink(null, artist.whatsapp)}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackLead({ type: "commission", source: "hero" })}
               className="group inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-ink transition-colors duration-200 hover:text-gold"
             >
               <span className="h-px w-7 bg-gold transition-all duration-200 group-hover:w-10" />

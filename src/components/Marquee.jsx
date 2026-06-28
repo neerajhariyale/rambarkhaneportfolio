@@ -1,8 +1,9 @@
-import { marqueePhrases } from "../data/site";
+import { useSite } from "../lib/siteContent";
 
 // Seamless infinite marquee — the row is duplicated and translated -50%.
 export default function Marquee() {
-  const row = [...marqueePhrases, ...marqueePhrases];
+  const { marquee } = useSite();
+  const row = [...marquee, ...marquee];
 
   return (
     <div className="relative overflow-hidden border-y border-line bg-paper-2 py-5">
@@ -14,7 +15,7 @@ export default function Marquee() {
           <div
             key={i}
             className="flex items-center"
-            aria-hidden={i >= marqueePhrases.length}
+            aria-hidden={i >= marquee.length}
           >
             <span className="px-8 font-display text-xl italic tracking-wide text-muted sm:text-2xl">
               {phrase}

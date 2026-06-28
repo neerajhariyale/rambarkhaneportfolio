@@ -1,32 +1,42 @@
-import { MotionConfig } from "framer-motion";
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import Marquee from "./components/Marquee";
-import About from "./components/About";
-import Gallery from "./components/Gallery";
-import Studio from "./components/Studio";
-import Contact from "./components/Contact";
-import Footer from "./components/Footer";
-import ScrollToTop from "./components/ScrollToTop";
+import { lazy, Suspense } from "react";
+import { Routes, Route } from "react-router-dom";
+import PublicSite from "./PublicSite";
+
+// Admin is code-split so it never weighs down the public site bundle.
+const AdminLogin = lazy(() => import("./admin/Login"));
+const AdminApp = lazy(() => import("./admin/AdminApp"));
+const RequireAuth = lazy(() => import("./admin/RequireAuth"));
+
+function AdminFallback() {
+  return (
+    <div className="grid min-h-screen place-items-center bg-paper text-muted">
+      <span className="text-sm uppercase tracking-[0.2em]">Loading…</span>
+    </div>
+  );
+}
 
 export default function App() {
   return (
-    // reducedMotion="user" makes Framer Motion honor prefers-reduced-motion
-    // (its JS-driven transform/opacity animations ignore the CSS media query).
-    <MotionConfig reducedMotion="user">
-      <div className="min-h-screen bg-paper text-ink">
-        <Navbar />
-        <main>
-          <Hero />
-          <Marquee />
-          <About />
-          <Gallery />
-          <Studio />
-          <Contact />
-        </main>
-        <Footer />
-        <ScrollToTop />
-      </div>
-    </MotionConfig>
+    <Routes>
+      <Route path="/" element={<PublicSite />} />
+      <Route
+        path="/admin/login"
+        element={
+          <Suspense fallback={<AdminFallback />}>
+            <AdminLogin />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/admin/*"
+        element={
+          <Suspense fallback={<AdminFallback />}>
+            <RequireAuth>
+              <AdminApp />
+            </RequireAuth>
+          </Suspense>
+        }
+      />
+    </Routes>
   );
 }

@@ -1,6 +1,8 @@
-import { artist, navLinks, contact } from "../data/site";
+import { navLinks } from "../data/site";
+import { useSite } from "../lib/siteContent";
 
 export default function Footer() {
+  const { artist, contact } = useSite();
   const go = (e, id) => {
     e.preventDefault();
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });

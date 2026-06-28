@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { artist, navLinks } from "../data/site";
+import { navLinks } from "../data/site";
+import { useSite } from "../lib/siteContent";
 import { lockScroll, unlockScroll } from "../lib/scrollLock";
 
 export default function Navbar() {
+  const { artist } = useSite();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState("home");

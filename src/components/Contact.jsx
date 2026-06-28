@@ -1,9 +1,13 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, MapPin, MessageCircle, Clock } from "lucide-react";
-import { contact, artist, buildWhatsAppLink } from "../data/site";
 import { fadeUp, stagger, viewportOnce } from "../lib/motion";
+import { useSite } from "../lib/siteContent";
+import InquiryForm from "./InquiryForm";
 
 export default function Contact() {
+  const { contact, artist } = useSite();
+  const [formOpen, setFormOpen] = useState(false);
   return (
     <section id="contact" className="relative py-24 sm:py-32">
       <div className="mx-auto max-w-5xl px-6">
@@ -31,16 +35,14 @@ export default function Contact() {
                 {contact.lead}
               </motion.p>
 
-              <motion.a
+              <motion.button
                 variants={fadeUp}
-                href={buildWhatsAppLink()}
-                target="_blank"
-                rel="noopener noreferrer"
+                onClick={() => setFormOpen(true)}
                 className="mt-8 inline-flex items-center gap-2.5 rounded-full bg-ink px-7 py-3.5 text-xs font-medium uppercase tracking-[0.2em] text-paper transition-colors duration-200 hover:bg-gold-deep"
               >
                 <MessageCircle size={16} />
-                Message on WhatsApp
-              </motion.a>
+                Message the Studio
+              </motion.button>
 
               <motion.p
                 variants={fadeUp}
@@ -98,6 +100,14 @@ export default function Contact() {
           </div>
         </motion.div>
       </div>
+
+      <InquiryForm
+        open={formOpen}
+        onClose={() => setFormOpen(false)}
+        type="general"
+        source="contact-form"
+        heading="Message the studio"
+      />
     </section>
   );
 }

@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
 import { motion, LayoutGroup } from "framer-motion";
-import { artworks, collections } from "../data/artworks";
+import { useCatalog } from "../lib/catalog";
 import { fadeUp, stagger, viewportOnce } from "../lib/motion";
 import ArtworkCard from "./ArtworkCard";
 import Lightbox from "./Lightbox";
 
 export default function Gallery() {
+  const { artworks, collections } = useCatalog();
   const [filter, setFilter] = useState("all");
   const [openIndex, setOpenIndex] = useState(null);
 
@@ -14,7 +15,7 @@ export default function Gallery() {
       filter === "all"
         ? artworks
         : artworks.filter((a) => a.collection === filter),
-    [filter]
+    [filter, artworks]
   );
 
   // Reset the lightbox when the filter changes so the positional index

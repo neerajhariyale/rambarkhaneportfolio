@@ -13,20 +13,33 @@ export const artist = {
 };
 
 // WhatsApp deep-link builder used by the lightbox + hero CTAs.
-export const buildWhatsAppLink = (art) => {
-  const base = `https://wa.me/${artist.whatsapp}`;
-  if (!art) {
-    const greeting = `Hello Ram, I'd love to learn more about your available works.`;
-    return `${base}?text=${encodeURIComponent(greeting)}`;
+// `number` defaults to the static studio number but can be overridden with the
+// admin-editable one; `lead` optionally embeds visitor name/email/phone/message.
+export const buildWhatsAppLink = (art, number = artist.whatsapp, lead) => {
+  const base = `https://wa.me/${number}`;
+  const lines = [];
+
+  if (art) {
+    lines.push("Hello Ram,", "", "I am interested in this work:");
+    lines.push(`*Title:* ${art.title}`);
+    if (art.medium) lines.push(`*Medium:* ${art.medium}`);
+    if (art.dimensions) lines.push(`*Dimensions:* ${art.dimensions}`);
+    if (art.price) lines.push(`*Price:* ${art.price}`);
+  } else {
+    lines.push("Hello Ram,", "", "I'd love to learn more about your work.");
   }
-  const message =
-    `Hello Ram,\n\nI am interested in purchasing:\n` +
-    `*Title:* ${art.title}\n` +
-    `*Medium:* ${art.medium}\n` +
-    `*Dimensions:* ${art.dimensions}\n` +
-    `*Price:* ${art.price}\n\n` +
-    `Please share more details.`;
-  return `${base}?text=${encodeURIComponent(message)}`;
+
+  if (lead && (lead.name || lead.email || lead.phone || lead.message)) {
+    lines.push("");
+    if (lead.name) lines.push(`*Name:* ${lead.name}`);
+    if (lead.email) lines.push(`*Email:* ${lead.email}`);
+    if (lead.phone) lines.push(`*Phone:* ${lead.phone}`);
+    if (lead.message) lines.push(`*Message:* ${lead.message}`);
+  } else {
+    lines.push("", "Please share more details.");
+  }
+
+  return `${base}?text=${encodeURIComponent(lines.join("\n"))}`;
 };
 
 export const navLinks = [
