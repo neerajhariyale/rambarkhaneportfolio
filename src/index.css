@@ -1,71 +1,206 @@
 @import "tailwindcss";
 
+/* ----------------------------------------------------------------------------
+   Ram Barkhane — "Plaster Gallery" Light Design System (Tailwind v4 tokens)
 
-/* :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+   A warm, museum-wall light theme. Every neutral sits on ONE warm axis.
+   Pure white is reserved for the inner mat behind artwork. Gold is demoted
+   to deep, sparing trim. Benchmarks: David Zwirner, White Cube, Hauser & Wirth.
+---------------------------------------------------------------------------- */
+@theme {
+  /* Warm paper scale (backgrounds) */
+  --color-paper: #faf8f4; /* page ground (gallery plaster) */
+  --color-paper-2: #f4f1ea; /* alternating sections */
+  --color-paper-3: #ece8df; /* wells / chips */
+  --color-line: #e4dfd7; /* hairline borders */
+  --color-mat: #ffffff; /* inner mat behind artwork only */
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Warm ink ramp (text) */
+  --color-ink: #1a1a1a; /* headings + body (16.4:1 AAA) */
+  --color-ink-soft: #232323; /* heading on tinted surface */
+  --color-muted: #636363; /* secondary / metadata (AA on paper / 2 / 3) */
+  --color-faint: #676767; /* tertiary labels / fine print (AA) */
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Deep antique gold — trim only */
+  --color-gold: #856832; /* text / eyebrow / hairline (4.9:1 AA) */
+  --color-gold-deep: #73592c; /* hover / pressed */
+  --color-gold-soft: #9a7b3f; /* icons / active borders / large UI */
+  --color-gold-light: #b8924a; /* gradient top stop */
+
+  /* Typography */
+  --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-sans: "Jost", ui-sans-serif, system-ui, sans-serif;
+
+  /* Motion */
+  --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+/* ----------------------------------------------------------------------------
+   Base
+---------------------------------------------------------------------------- */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
-  a:hover {
-    color: #747bff;
+
+  body {
+    margin: 0;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
-  button {
-    background-color: #f9f9f9;
+
+  ::selection {
+    background: var(--color-gold);
+    color: var(--color-paper);
   }
-} */
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.05;
+    color: var(--color-ink);
+  }
+
+  /* Accessible focus ring (re-toned for light) */
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Every interactive control shows the pointer (browsers no longer
+     default <button> to pointer). */
+  button:not(:disabled),
+  [role="button"],
+  a[href] {
+    cursor: pointer;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   Utilities
+---------------------------------------------------------------------------- */
+@layer utilities {
+  /* Deep-gold gradient text for accents (kept legible on paper) */
+  .text-gradient-gold {
+    /* Lightest rendered stop is --color-gold (4.9:1 AA); the very-light
+       gold-light failed contrast on paper, so it is reserved for non-text. */
+    background: linear-gradient(
+      120deg,
+      var(--color-gold) 0%,
+      var(--color-gold) 45%,
+      var(--color-gold-deep) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Thin uppercase eyebrow / kicker */
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    color: var(--color-gold);
+  }
+
+  /* Hairline gold divider */
+  .rule-gold {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-gold) 50%,
+      transparent
+    );
+  }
+
+  /* Light frosted glass (nav, plates) */
+  .glass {
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    border: 1px solid var(--color-line);
+  }
+
+  /* Warm, single-light-source layered shadows (Josh Comeau pattern).
+     Used sparingly to float matted artwork on the paper ground. */
+  .shadow-frame {
+    box-shadow:
+      0 1px 2px rgba(40, 34, 28, 0.05),
+      0 8px 24px rgba(40, 34, 28, 0.06);
+  }
+  .shadow-frame-lg {
+    box-shadow:
+      0 2px 4px rgba(40, 34, 28, 0.05),
+      0 12px 28px rgba(40, 34, 28, 0.08),
+      0 28px 64px rgba(40, 34, 28, 0.06);
+  }
+
+  /* Custom thin scrollbar */
+  .scrollbar-luxe {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gold-soft) transparent;
+  }
+  .scrollbar-luxe::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scrollbar-luxe::-webkit-scrollbar-thumb {
+    background: var(--color-gold-soft);
+    border-radius: 999px;
+  }
+}
+
+/* Ken Burns slow zoom for hero */
+@keyframes ken-burns {
+  0% {
+    transform: scale(1.06) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.16) translate(-1.5%, -1.5%);
+  }
+}
+.animate-ken-burns {
+  animation: ken-burns 26s var(--ease-luxe) infinite alternate;
+}
+
+/* Marquee */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee 38s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-ken-burns,
+  .animate-marquee {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
